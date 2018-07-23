@@ -460,7 +460,7 @@ bool VerticalView::addVisibleItems(qreal fillFrom, qreal fillTo, bool asynchrono
     bool changed = false;
 
     while (modelIndex < m_delegateModel->count() && pos <= fillTo) {
-        if (!(item = createItem(modelIndex, asynchronous)))
+        if (!(item = createItem(modelIndex, asynchronous ? QQmlIncubator::Asynchronous : QQmlIncubator::AsynchronousIfNested)))
             break;
         pos += item->height() + m_spacing;
         ++modelIndex;
@@ -475,7 +475,7 @@ bool VerticalView::addVisibleItems(qreal fillFrom, qreal fillTo, bool asynchrono
         pos = item->y();
     }
     while (modelIndex >= 0 && pos > fillFrom) {
-        if (!(item = createItem(modelIndex, asynchronous)))
+        if (!(item = createItem(modelIndex, asynchronous ? QQmlIncubator::Asynchronous : QQmlIncubator::AsynchronousIfNested )))
             break;
         pos -= item->height() + m_spacing;
         --modelIndex;
@@ -558,7 +558,7 @@ VerticalView::ListItem *VerticalView::createItem(int modelIndex, bool asynchrono
         return nullptr;
 
     m_asyncRequestedIndex = -1;
-    QObject* object = m_delegateModel->object(modelIndex, asynchronous);
+    QObject* object = m_delegateModel->object(modelIndex, asynchronous ? QQmlIncubator::Asynchronous : QQmlIncubator::AsynchronousIfNested);
     QQuickItem *item = qmlobject_cast<QQuickItem*>(object);
     if (!item) {
         if (object) {
@@ -753,11 +753,11 @@ void VerticalView::_q_modelUpdated(const QQmlChangeSet &changeSet, bool /*reset*
     m_contentHeightDirty = true;
 }
 
-void VerticalView::itemGeometryChanged(QQuickItem * /*item*/, const QRectF &newGeometry, const QRectF &oldGeometry)
+void VerticalView::itemGeometryChanged(QQuickItem * /*item*/, QQuickGeometryChange change, const QRectF &oldGeometry)
 {
-    const qreal heightDiff = newGeometry.height() - oldGeometry.height();
-    if (heightDiff != 0) {
+    if (change.heightChange()) {
         if (oldGeometry.y() + oldGeometry.height() <= contentY() && !m_visibleItems.isEmpty()) {
+            const qreal heightDiff = height() - oldGeometry.height();
             ListItem *firstItem = m_visibleItems.first();
             firstItem->setY(firstItem->y() - heightDiff);
             adjustMinYExtent();
