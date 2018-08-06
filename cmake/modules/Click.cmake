@@ -56,9 +56,9 @@ if(CLICK_MODE)
   INSTALL( FILES ${FILES_TO_DEPLOY} DESTINATION ${DATA_DIR}lib/${ARCH_TRIPLET} )
 
   # if no line is active, docviewer is built without libreoffice support (plugin)
-  #MESSAGE("Installing LibreOffice from ${UPSTREAM_LIBS_DIR}/opt/libreoffice/lib/libreoffice to ${DATA_DIR}lib/${ARCH_TRIPLET}/libreoffice")
+  MESSAGE("Installing LibreOffice from ${UPSTREAM_LIBS_DIR}/opt/libreoffice/lib/libreoffice to ${DATA_DIR}lib/${ARCH_TRIPLET}/libreoffice")
   # original line (install downloaded deps) 
-  #INSTALL( DIRECTORY ${UPSTREAM_LIBS_DIR}/opt/libreoffice/lib/libreoffice/ DESTINATION ${DATA_DIR}lib/${ARCH_TRIPLET}/libreoffice )
+  INSTALL( DIRECTORY ${UPSTREAM_LIBS_DIR}/usr/lib/libreoffice/ DESTINATION ${DATA_DIR}lib/${ARCH_TRIPLET}/libreoffice )
   # install deps from build environment (/usr/lib)
   #INSTALL(DIRECTORY /usr/lib/libreoffice/ DESTINATION ${DATA_DIR}lib/${ARCH_TRIPLET}/libreoffice )
 
